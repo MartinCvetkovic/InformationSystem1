@@ -27,9 +27,7 @@ CREATE TABLE `filijala` (
   `Naziv` varchar(45) NOT NULL,
   `Adresa` varchar(45) NOT NULL,
   `IdMes` int NOT NULL,
-  PRIMARY KEY (`IdFil`),
-  KEY `FK_IdMes_mesto_idx` (`IdMes`),
-  CONSTRAINT `FK_IdMes_filijala` FOREIGN KEY (`IdMes`) REFERENCES `mesto` (`IdMes`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdFil`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -53,10 +51,7 @@ DROP TABLE IF EXISTS `isplata`;
 CREATE TABLE `isplata` (
   `IdTra` int NOT NULL,
   `IdFil` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdFil_isplata_idx` (`IdFil`),
-  CONSTRAINT `FK_IdFil_isplata` FOREIGN KEY (`IdFil`) REFERENCES `filijala` (`IdFil`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_IdTra_isplata` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -82,9 +77,7 @@ CREATE TABLE `komitent` (
   `Naziv` varchar(45) NOT NULL,
   `Adresa` varchar(45) NOT NULL,
   `IdMes` int NOT NULL,
-  PRIMARY KEY (`IdKom`),
-  KEY `FK_IdMes_mesto_idx` (`IdMes`),
-  CONSTRAINT `FK_IdMes_komitent` FOREIGN KEY (`IdMes`) REFERENCES `mesto` (`IdMes`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdKom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -134,10 +127,7 @@ DROP TABLE IF EXISTS `prenos`;
 CREATE TABLE `prenos` (
   `IdTra` int NOT NULL,
   `NaRac` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdRac_prenos_idx` (`NaRac`),
-  CONSTRAINT `FK_IdRac_prenos` FOREIGN KEY (`NaRac`) REFERENCES `racun` (`IdRac`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_IdTra_prenos` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -160,18 +150,14 @@ DROP TABLE IF EXISTS `racun`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `racun` (
   `IdRac` int NOT NULL,
-  `DatumVreme` datetime NOT NULL,
+  `DatumVreme` varchar(45) NOT NULL,
   `Stanje` float NOT NULL,
   `DozvMinus` float NOT NULL,
   `Status` varchar(45) NOT NULL,
   `BrTransakcija` int NOT NULL,
   `IdFil` int NOT NULL,
   `IdKom` int NOT NULL,
-  PRIMARY KEY (`IdRac`),
-  KEY `FK_IdFil_racun_idx` (`IdFil`),
-  KEY `FK_IdKom_racun_idx` (`IdKom`),
-  CONSTRAINT `FK_IdFil_racun` FOREIGN KEY (`IdFil`) REFERENCES `filijala` (`IdFil`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_IdKom_racun` FOREIGN KEY (`IdKom`) REFERENCES `komitent` (`IdKom`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdRac`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -194,14 +180,12 @@ DROP TABLE IF EXISTS `transakcija`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transakcija` (
   `IdTra` int NOT NULL,
-  `DatumVreme` datetime NOT NULL,
+  `DatumVreme` varchar(45) NOT NULL,
   `Iznos` float NOT NULL,
   `RedBr` int NOT NULL,
   `Svrha` varchar(45) NOT NULL,
   `IdRac` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdRac_transakcija_idx` (`IdRac`),
-  CONSTRAINT `FK_IdRac_transakcija` FOREIGN KEY (`IdRac`) REFERENCES `racun` (`IdRac`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -225,10 +209,7 @@ DROP TABLE IF EXISTS `uplata`;
 CREATE TABLE `uplata` (
   `IdTra` int NOT NULL,
   `IdFil` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdFil_uplata_idx` (`IdFil`),
-  CONSTRAINT `FK_IdFil_uplata` FOREIGN KEY (`IdFil`) REFERENCES `filijala` (`IdFil`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_IdTra_uplata` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

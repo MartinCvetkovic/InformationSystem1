@@ -23,14 +23,12 @@ DROP TABLE IF EXISTS `filijala`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `filijala` (
-  `IdFil` int NOT NULL AUTO_INCREMENT,
+  `IdFil` int NOT NULL,
   `Naziv` varchar(45) NOT NULL,
   `Adresa` varchar(45) NOT NULL,
   `IdMes` int NOT NULL,
-  PRIMARY KEY (`IdFil`),
-  KEY `FK_IdMes_mesto_idx` (`IdMes`),
-  CONSTRAINT `FK_IdMes_filijala` FOREIGN KEY (`IdMes`) REFERENCES `mesto` (`IdMes`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IdFil`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,14 +49,12 @@ DROP TABLE IF EXISTS `komitent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `komitent` (
-  `IdKom` int NOT NULL AUTO_INCREMENT,
+  `IdKom` int NOT NULL,
   `Naziv` varchar(45) NOT NULL,
   `Adresa` varchar(45) NOT NULL,
   `IdMes` int NOT NULL,
-  PRIMARY KEY (`IdKom`),
-  KEY `FK_IdMes_mesto_idx` (`IdMes`),
-  CONSTRAINT `FK_IdMes_komitent` FOREIGN KEY (`IdMes`) REFERENCES `mesto` (`IdMes`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IdKom`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,12 +75,12 @@ DROP TABLE IF EXISTS `mesto`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mesto` (
-  `IdMes` int NOT NULL AUTO_INCREMENT,
+  `IdMes` int NOT NULL,
   `Naziv` varchar(45) NOT NULL,
   `PosBroj` varchar(45) NOT NULL,
   PRIMARY KEY (`IdMes`),
   UNIQUE KEY `PosBroj_UNIQUE` (`PosBroj`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

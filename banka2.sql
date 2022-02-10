@@ -25,8 +25,7 @@ DROP TABLE IF EXISTS `isplata`;
 CREATE TABLE `isplata` (
   `IdTra` int NOT NULL,
   `IdFil` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  CONSTRAINT `FK_IdTra_isplata` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,12 +47,12 @@ DROP TABLE IF EXISTS `komitent`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `komitent` (
-  `IdKom` int NOT NULL AUTO_INCREMENT,
+  `IdKom` int NOT NULL,
   `Naziv` varchar(45) NOT NULL,
   `Adresa` varchar(45) NOT NULL,
   `IdMes` int NOT NULL,
   PRIMARY KEY (`IdKom`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,10 +75,7 @@ DROP TABLE IF EXISTS `prenos`;
 CREATE TABLE `prenos` (
   `IdTra` int NOT NULL,
   `NaRac` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdRac_prenos_idx` (`NaRac`),
-  CONSTRAINT `FK_IdRac_prenos` FOREIGN KEY (`NaRac`) REFERENCES `racun` (`IdRac`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_IdTra_prenos` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -101,18 +97,16 @@ DROP TABLE IF EXISTS `racun`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `racun` (
-  `IdRac` int NOT NULL AUTO_INCREMENT,
-  `DatumVreme` datetime NOT NULL,
+  `IdRac` int NOT NULL,
+  `DatumVreme` varchar(45) NOT NULL,
   `Stanje` float NOT NULL,
   `DozvMinus` float NOT NULL,
   `Status` varchar(45) NOT NULL,
   `BrTransakcija` int NOT NULL,
   `IdFil` int NOT NULL,
   `IdKom` int NOT NULL,
-  PRIMARY KEY (`IdRac`),
-  KEY `FK_IdKom_racun_idx` (`IdKom`),
-  CONSTRAINT `FK_IdKom_racun` FOREIGN KEY (`IdKom`) REFERENCES `komitent` (`IdKom`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IdRac`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,16 +127,14 @@ DROP TABLE IF EXISTS `transakcija`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transakcija` (
-  `IdTra` int NOT NULL AUTO_INCREMENT,
-  `DatumVreme` datetime NOT NULL,
+  `IdTra` int NOT NULL,
+  `DatumVreme` varchar(45) NOT NULL,
   `Iznos` float NOT NULL,
   `RedBr` int NOT NULL,
   `Svrha` varchar(45) NOT NULL,
   `IdRac` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  KEY `FK_IdRac_transakcija_idx` (`IdRac`),
-  CONSTRAINT `FK_IdRac_transakcija` FOREIGN KEY (`IdRac`) REFERENCES `racun` (`IdRac`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IdTra`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,8 +157,7 @@ DROP TABLE IF EXISTS `uplata`;
 CREATE TABLE `uplata` (
   `IdTra` int NOT NULL,
   `IdFil` int NOT NULL,
-  PRIMARY KEY (`IdTra`),
-  CONSTRAINT `FK_IdTra_uplata` FOREIGN KEY (`IdTra`) REFERENCES `transakcija` (`IdTra`) ON UPDATE CASCADE
+  PRIMARY KEY (`IdTra`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
