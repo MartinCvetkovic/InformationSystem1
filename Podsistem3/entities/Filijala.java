@@ -6,22 +6,16 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Filijala.findAll", query = "SELECT f FROM Filijala f"),
     @NamedQuery(name = "Filijala.findByIdFil", query = "SELECT f FROM Filijala f WHERE f.idFil = :idFil"),
     @NamedQuery(name = "Filijala.findByNaziv", query = "SELECT f FROM Filijala f WHERE f.naziv = :naziv"),
-    @NamedQuery(name = "Filijala.findByAdresa", query = "SELECT f FROM Filijala f WHERE f.adresa = :adresa")})
+    @NamedQuery(name = "Filijala.findByAdresa", query = "SELECT f FROM Filijala f WHERE f.adresa = :adresa"),
+    @NamedQuery(name = "Filijala.findByIdMes", query = "SELECT f FROM Filijala f WHERE f.idMes = :idMes")})
 public class Filijala implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,15 +48,10 @@ public class Filijala implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "Adresa")
     private String adresa;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idFil")
-    private List<Isplata> isplataList;
-    @JoinColumn(name = "IdMes", referencedColumnName = "IdMes")
-    @ManyToOne(optional = false)
-    private Mesto idMes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idFil")
-    private List<Racun> racunList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idFil")
-    private List<Uplata> uplataList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdMes")
+    private int idMes;
 
     public Filijala() {
     }
@@ -70,10 +60,11 @@ public class Filijala implements Serializable {
         this.idFil = idFil;
     }
 
-    public Filijala(Integer idFil, String naziv, String adresa) {
+    public Filijala(Integer idFil, String naziv, String adresa, int idMes) {
         this.idFil = idFil;
         this.naziv = naziv;
         this.adresa = adresa;
+        this.idMes = idMes;
     }
 
     public Integer getIdFil() {
@@ -100,39 +91,12 @@ public class Filijala implements Serializable {
         this.adresa = adresa;
     }
 
-    @XmlTransient
-    public List<Isplata> getIsplataList() {
-        return isplataList;
-    }
-
-    public void setIsplataList(List<Isplata> isplataList) {
-        this.isplataList = isplataList;
-    }
-
-    public Mesto getIdMes() {
+    public int getIdMes() {
         return idMes;
     }
 
-    public void setIdMes(Mesto idMes) {
+    public void setIdMes(int idMes) {
         this.idMes = idMes;
-    }
-
-    @XmlTransient
-    public List<Racun> getRacunList() {
-        return racunList;
-    }
-
-    public void setRacunList(List<Racun> racunList) {
-        this.racunList = racunList;
-    }
-
-    @XmlTransient
-    public List<Uplata> getUplataList() {
-        return uplataList;
-    }
-
-    public void setUplataList(List<Uplata> uplataList) {
-        this.uplataList = uplataList;
     }
 
     @Override

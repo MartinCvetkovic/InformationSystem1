@@ -53,32 +53,35 @@ public class Podsistem3 {
             if (message instanceof ObjectMessage) {
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
-                    List result = (List) objectMessage.getObject();
-                    String table = objectMessage.getStringProperty("tabela");
-                    List ps3List = em.createNamedQuery(table + ".findAll").getResultList();
-                    for (Object ent : result) {
-                        boolean contains = false;
-                        for (Object ps3ent : ps3List) {
-                            if (ent.equals(ps3ent) && !ent.toString().equals(ps3ent.toString())) {
+                    if (objectMessage.getStringProperty("za") == null || !objectMessage.getStringProperty("za").equals("cs")) {
+                        List result = (List) objectMessage.getObject();
+                        String table = objectMessage.getStringProperty("tabela");
+                        List ps3List = em.createNamedQuery(table + ".findAll").getResultList();
+                        for (Object ent : result) {
+                            boolean contains = false;
+                            if (ps3List != null) {
+                                for (Object ps3ent : ps3List) {
+                                    if (ent.equals(ps3ent) && !ent.toString().equals(ps3ent.toString())) {
+                                        em.getTransaction().begin();
+                                        em.remove(ps3ent);
+                                        em.flush();
+                                        em.getTransaction().commit();
+                                        break;
+                                    }
+                                    if (ent.equals(ps3ent) && ent.toString().equals(ps3ent.toString())) {
+                                        contains = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (contains == false) {
                                 em.getTransaction().begin();
-                                em.remove(ps3ent);
+                                em.persist(ent);
                                 em.flush();
                                 em.getTransaction().commit();
-                                break;
                             }
-                            if (ent.equals(ps3ent) && ent.toString().equals(ps3ent.toString())) {
-                                contains = true;
-                                break;
-                            }
-                        }
-                        if (contains == false) {
-                            em.getTransaction().begin();
-                            em.persist(ent);
-                            em.flush();
-                            em.getTransaction().commit();
                         }
                     }
-
                 } catch (JMSException ex) {
                     if (em.getTransaction().isActive()) {
                         em.getTransaction().rollback();
@@ -88,7 +91,7 @@ public class Podsistem3 {
         });
         try {
             while (true) {
-                Thread.sleep(120 * 1000);
+                Thread.sleep(30 * 1000);
                 TextMessage textMessage = context.createTextMessage("ps3");
                 producer.send(topic, textMessage);
                 System.out.println("Poslata poruka iz ps3");

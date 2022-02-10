@@ -6,22 +6,16 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Komitent.findAll", query = "SELECT k FROM Komitent k"),
     @NamedQuery(name = "Komitent.findByIdKom", query = "SELECT k FROM Komitent k WHERE k.idKom = :idKom"),
     @NamedQuery(name = "Komitent.findByNaziv", query = "SELECT k FROM Komitent k WHERE k.naziv = :naziv"),
-    @NamedQuery(name = "Komitent.findByAdresa", query = "SELECT k FROM Komitent k WHERE k.adresa = :adresa")})
+    @NamedQuery(name = "Komitent.findByAdresa", query = "SELECT k FROM Komitent k WHERE k.adresa = :adresa"),
+    @NamedQuery(name = "Komitent.findByIdMes", query = "SELECT k FROM Komitent k WHERE k.idMes = :idMes")})
 public class Komitent implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,11 +48,10 @@ public class Komitent implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "Adresa")
     private String adresa;
-    @JoinColumn(name = "IdMes", referencedColumnName = "IdMes")
-    @ManyToOne(optional = false)
-    private Mesto idMes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idKom")
-    private List<Racun> racunList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdMes")
+    private int idMes;
 
     public Komitent() {
     }
@@ -66,10 +60,11 @@ public class Komitent implements Serializable {
         this.idKom = idKom;
     }
 
-    public Komitent(Integer idKom, String naziv, String adresa) {
+    public Komitent(Integer idKom, String naziv, String adresa, int idMes) {
         this.idKom = idKom;
         this.naziv = naziv;
         this.adresa = adresa;
+        this.idMes = idMes;
     }
 
     public Integer getIdKom() {
@@ -96,21 +91,12 @@ public class Komitent implements Serializable {
         this.adresa = adresa;
     }
 
-    public Mesto getIdMes() {
+    public int getIdMes() {
         return idMes;
     }
 
-    public void setIdMes(Mesto idMes) {
+    public void setIdMes(int idMes) {
         this.idMes = idMes;
-    }
-
-    @XmlTransient
-    public List<Racun> getRacunList() {
-        return racunList;
-    }
-
-    public void setRacunList(List<Racun> racunList) {
-        this.racunList = racunList;
     }
 
     @Override

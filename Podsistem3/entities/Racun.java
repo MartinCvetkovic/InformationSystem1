@@ -6,25 +6,16 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,7 +31,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Racun.findByStanje", query = "SELECT r FROM Racun r WHERE r.stanje = :stanje"),
     @NamedQuery(name = "Racun.findByDozvMinus", query = "SELECT r FROM Racun r WHERE r.dozvMinus = :dozvMinus"),
     @NamedQuery(name = "Racun.findByStatus", query = "SELECT r FROM Racun r WHERE r.status = :status"),
-    @NamedQuery(name = "Racun.findByBrTransakcija", query = "SELECT r FROM Racun r WHERE r.brTransakcija = :brTransakcija")})
+    @NamedQuery(name = "Racun.findByBrTransakcija", query = "SELECT r FROM Racun r WHERE r.brTransakcija = :brTransakcija"),
+    @NamedQuery(name = "Racun.findByIdFil", query = "SELECT r FROM Racun r WHERE r.idFil = :idFil"),
+    @NamedQuery(name = "Racun.findByIdKom", query = "SELECT r FROM Racun r WHERE r.idKom = :idKom")})
 public class Racun implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,9 +44,9 @@ public class Racun implements Serializable {
     private Integer idRac;
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "DatumVreme")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date datumVreme;
+    private String datumVreme;
     @Basic(optional = false)
     @NotNull
     @Column(name = "Stanje")
@@ -71,16 +64,14 @@ public class Racun implements Serializable {
     @NotNull
     @Column(name = "BrTransakcija")
     private int brTransakcija;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRac")
-    private List<Transakcija> transakcijaList;
-    @JoinColumn(name = "IdFil", referencedColumnName = "IdFil")
-    @ManyToOne(optional = false)
-    private Filijala idFil;
-    @JoinColumn(name = "IdKom", referencedColumnName = "IdKom")
-    @ManyToOne(optional = false)
-    private Komitent idKom;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "naRac")
-    private List<Prenos> prenosList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdFil")
+    private int idFil;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdKom")
+    private int idKom;
 
     public Racun() {
     }
@@ -89,13 +80,15 @@ public class Racun implements Serializable {
         this.idRac = idRac;
     }
 
-    public Racun(Integer idRac, Date datumVreme, float stanje, float dozvMinus, String status, int brTransakcija) {
+    public Racun(Integer idRac, String datumVreme, float stanje, float dozvMinus, String status, int brTransakcija, int idFil, int idKom) {
         this.idRac = idRac;
         this.datumVreme = datumVreme;
         this.stanje = stanje;
         this.dozvMinus = dozvMinus;
         this.status = status;
         this.brTransakcija = brTransakcija;
+        this.idFil = idFil;
+        this.idKom = idKom;
     }
 
     public Integer getIdRac() {
@@ -106,11 +99,11 @@ public class Racun implements Serializable {
         this.idRac = idRac;
     }
 
-    public Date getDatumVreme() {
+    public String getDatumVreme() {
         return datumVreme;
     }
 
-    public void setDatumVreme(Date datumVreme) {
+    public void setDatumVreme(String datumVreme) {
         this.datumVreme = datumVreme;
     }
 
@@ -146,38 +139,20 @@ public class Racun implements Serializable {
         this.brTransakcija = brTransakcija;
     }
 
-    @XmlTransient
-    public List<Transakcija> getTransakcijaList() {
-        return transakcijaList;
-    }
-
-    public void setTransakcijaList(List<Transakcija> transakcijaList) {
-        this.transakcijaList = transakcijaList;
-    }
-
-    public Filijala getIdFil() {
+    public int getIdFil() {
         return idFil;
     }
 
-    public void setIdFil(Filijala idFil) {
+    public void setIdFil(int idFil) {
         this.idFil = idFil;
     }
 
-    public Komitent getIdKom() {
+    public int getIdKom() {
         return idKom;
     }
 
-    public void setIdKom(Komitent idKom) {
+    public void setIdKom(int idKom) {
         this.idKom = idKom;
-    }
-
-    @XmlTransient
-    public List<Prenos> getPrenosList() {
-        return prenosList;
-    }
-
-    public void setPrenosList(List<Prenos> prenosList) {
-        this.prenosList = prenosList;
     }
 
     @Override
@@ -202,7 +177,7 @@ public class Racun implements Serializable {
 
     @Override
     public String toString() {
-        return "Racun{" + "idRac=" + idRac + ", datumVreme=" + datumVreme + ", stanje=" + stanje + ", dozvMinus=" + dozvMinus + ", status=" + status + ", brTransakcija=" + brTransakcija + ", idFil=" + idFil.getIdFil() + ", idKom=" + idKom + '}';
+        return "Racun{" + "idRac=" + idRac + ", datumVreme=" + datumVreme + ", stanje=" + stanje + ", dozvMinus=" + dozvMinus + ", status=" + status + ", brTransakcija=" + brTransakcija + ", idFil=" + idFil + ", idKom=" + idKom + '}';
     }
     
 }

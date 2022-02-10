@@ -10,11 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Prenos.findAll", query = "SELECT p FROM Prenos p"),
-    @NamedQuery(name = "Prenos.findByIdTra", query = "SELECT p FROM Prenos p WHERE p.idTra = :idTra")})
+    @NamedQuery(name = "Prenos.findByIdTra", query = "SELECT p FROM Prenos p WHERE p.idTra = :idTra"),
+    @NamedQuery(name = "Prenos.findByNaRac", query = "SELECT p FROM Prenos p WHERE p.naRac = :naRac")})
 public class Prenos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,18 +35,21 @@ public class Prenos implements Serializable {
     @NotNull
     @Column(name = "IdTra")
     private Integer idTra;
-    @JoinColumn(name = "NaRac", referencedColumnName = "IdRac")
-    @ManyToOne(optional = false)
-    private Racun naRac;
-    @JoinColumn(name = "IdTra", referencedColumnName = "IdTra", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Transakcija transakcija;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "NaRac")
+    private int naRac;
 
     public Prenos() {
     }
 
     public Prenos(Integer idTra) {
         this.idTra = idTra;
+    }
+
+    public Prenos(Integer idTra, int naRac) {
+        this.idTra = idTra;
+        this.naRac = naRac;
     }
 
     public Integer getIdTra() {
@@ -59,20 +60,12 @@ public class Prenos implements Serializable {
         this.idTra = idTra;
     }
 
-    public Racun getNaRac() {
+    public int getNaRac() {
         return naRac;
     }
 
-    public void setNaRac(Racun naRac) {
+    public void setNaRac(int naRac) {
         this.naRac = naRac;
-    }
-
-    public Transakcija getTransakcija() {
-        return transakcija;
-    }
-
-    public void setTransakcija(Transakcija transakcija) {
-        this.transakcija = transakcija;
     }
 
     @Override

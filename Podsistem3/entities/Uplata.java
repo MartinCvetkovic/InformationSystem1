@@ -10,11 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Uplata.findAll", query = "SELECT u FROM Uplata u"),
-    @NamedQuery(name = "Uplata.findByIdTra", query = "SELECT u FROM Uplata u WHERE u.idTra = :idTra")})
+    @NamedQuery(name = "Uplata.findByIdTra", query = "SELECT u FROM Uplata u WHERE u.idTra = :idTra"),
+    @NamedQuery(name = "Uplata.findByIdFil", query = "SELECT u FROM Uplata u WHERE u.idFil = :idFil")})
 public class Uplata implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,18 +35,21 @@ public class Uplata implements Serializable {
     @NotNull
     @Column(name = "IdTra")
     private Integer idTra;
-    @JoinColumn(name = "IdFil", referencedColumnName = "IdFil")
-    @ManyToOne(optional = false)
-    private Filijala idFil;
-    @JoinColumn(name = "IdTra", referencedColumnName = "IdTra", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Transakcija transakcija;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdFil")
+    private int idFil;
 
     public Uplata() {
     }
 
     public Uplata(Integer idTra) {
         this.idTra = idTra;
+    }
+
+    public Uplata(Integer idTra, int idFil) {
+        this.idTra = idTra;
+        this.idFil = idFil;
     }
 
     public Integer getIdTra() {
@@ -59,20 +60,12 @@ public class Uplata implements Serializable {
         this.idTra = idTra;
     }
 
-    public Filijala getIdFil() {
+    public int getIdFil() {
         return idFil;
     }
 
-    public void setIdFil(Filijala idFil) {
+    public void setIdFil(int idFil) {
         this.idFil = idFil;
-    }
-
-    public Transakcija getTransakcija() {
-        return transakcija;
-    }
-
-    public void setTransakcija(Transakcija transakcija) {
-        this.transakcija = transakcija;
     }
 
     @Override
@@ -97,7 +90,7 @@ public class Uplata implements Serializable {
 
     @Override
     public String toString() {
-        return "Uplata{" + "idTra=" + idTra + ", idFil=" + idFil.getIdFil() + '}';
+        return "Uplata{" + "idTra=" + idTra + ", idFil=" + idFil + '}';
     }
     
 }
