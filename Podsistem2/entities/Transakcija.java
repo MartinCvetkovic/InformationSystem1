@@ -6,22 +6,13 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -39,20 +30,21 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Transakcija.findByDatumVreme", query = "SELECT t FROM Transakcija t WHERE t.datumVreme = :datumVreme"),
     @NamedQuery(name = "Transakcija.findByIznos", query = "SELECT t FROM Transakcija t WHERE t.iznos = :iznos"),
     @NamedQuery(name = "Transakcija.findByRedBr", query = "SELECT t FROM Transakcija t WHERE t.redBr = :redBr"),
-    @NamedQuery(name = "Transakcija.findBySvrha", query = "SELECT t FROM Transakcija t WHERE t.svrha = :svrha")})
+    @NamedQuery(name = "Transakcija.findBySvrha", query = "SELECT t FROM Transakcija t WHERE t.svrha = :svrha"),
+    @NamedQuery(name = "Transakcija.findByIdRac", query = "SELECT t FROM Transakcija t WHERE t.idRac = :idRac")})
 public class Transakcija implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "IdTra")
     private Integer idTra;
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "DatumVreme")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date datumVreme;
+    private String datumVreme;
     @Basic(optional = false)
     @NotNull
     @Column(name = "Iznos")
@@ -66,15 +58,10 @@ public class Transakcija implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "Svrha")
     private String svrha;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
-    private Isplata isplata;
-    @JoinColumn(name = "IdRac", referencedColumnName = "IdRac")
-    @ManyToOne(optional = false)
-    private Racun idRac;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
-    private Prenos prenos;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "transakcija")
-    private Uplata uplata;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdRac")
+    private int idRac;
 
     public Transakcija() {
     }
@@ -83,12 +70,13 @@ public class Transakcija implements Serializable {
         this.idTra = idTra;
     }
 
-    public Transakcija(Integer idTra, Date datumVreme, float iznos, int redBr, String svrha) {
+    public Transakcija(Integer idTra, String datumVreme, float iznos, int redBr, String svrha, int idRac) {
         this.idTra = idTra;
         this.datumVreme = datumVreme;
         this.iznos = iznos;
         this.redBr = redBr;
         this.svrha = svrha;
+        this.idRac = idRac;
     }
 
     public Integer getIdTra() {
@@ -99,11 +87,11 @@ public class Transakcija implements Serializable {
         this.idTra = idTra;
     }
 
-    public Date getDatumVreme() {
+    public String getDatumVreme() {
         return datumVreme;
     }
 
-    public void setDatumVreme(Date datumVreme) {
+    public void setDatumVreme(String datumVreme) {
         this.datumVreme = datumVreme;
     }
 
@@ -131,36 +119,12 @@ public class Transakcija implements Serializable {
         this.svrha = svrha;
     }
 
-    public Isplata getIsplata() {
-        return isplata;
-    }
-
-    public void setIsplata(Isplata isplata) {
-        this.isplata = isplata;
-    }
-
-    public Racun getIdRac() {
+    public int getIdRac() {
         return idRac;
     }
 
-    public void setIdRac(Racun idRac) {
+    public void setIdRac(int idRac) {
         this.idRac = idRac;
-    }
-
-    public Prenos getPrenos() {
-        return prenos;
-    }
-
-    public void setPrenos(Prenos prenos) {
-        this.prenos = prenos;
-    }
-
-    public Uplata getUplata() {
-        return uplata;
-    }
-
-    public void setUplata(Uplata uplata) {
-        this.uplata = uplata;
     }
 
     @Override

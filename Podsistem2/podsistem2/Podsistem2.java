@@ -1,6 +1,9 @@
 package podsistem2;
 
+import entities.Komitent;
+import entities.Racun;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
@@ -55,9 +58,37 @@ public class Podsistem2 {
                         sendListToSubsystem(context, producer, em.createNamedQuery("Isplata.findAll"), "Isplata");
                         sendListToSubsystem(context, producer, em.createNamedQuery("Prenos.findAll"), "Prenos");
                         sendListToSubsystem(context, producer, em.createNamedQuery("Uplata.findAll"), "Uplata");
-                    } else if (textMessage.getText().equals("cs")) {
-                        // TODO
-                        System.out.println("Poruka primljena iz cs u ps2");
+                    } else if (textMessage.getText().equals("cs:3")) {
+                        Komitent k = new Komitent();
+                        k.setNaziv(textMessage.getStringProperty("naziv"));
+                        k.setAdresa(textMessage.getStringProperty("adresa"));
+                        k.setIdMes(textMessage.getIntProperty("IdMes"));
+                        k.setIdKom(textMessage.getIntProperty("IdKom"));
+                        em.getTransaction().begin();
+                        em.persist(k);
+                        em.flush();
+                        em.getTransaction().commit();
+                    } else if (textMessage.getText().equals("cs:4")) {
+                        int idMes = textMessage.getIntProperty("idMes");
+                        int idKom = textMessage.getIntProperty("idKom");
+                        em.getTransaction().begin();
+                        em.find(Komitent.class, idKom).setIdMes(idMes);
+                        em.flush();
+                        em.getTransaction().commit();
+                    } else if (textMessage.getText().equals("cs:5")) {
+                        Racun r = new Racun();
+                        r.setIdRac(textMessage.getIntProperty("IdRac"));
+                        r.setDatumVreme(textMessage.getStringProperty("DatumVreme"));
+                        r.setStanje(textMessage.getFloatProperty("Stanje"));
+                        r.setDozvMinus(textMessage.getFloatProperty("DozvMinus"));
+                        r.setStatus(textMessage.getStringProperty("Status"));
+                        r.setBrTransakcija(textMessage.getIntProperty("BrTransakcija"));
+                        r.setIdFil(textMessage.getIntProperty("IdFil"));
+                        r.setIdKom(textMessage.getIntProperty("IdKom"));
+                        em.getTransaction().begin();
+                        em.persist(r);
+                        em.flush();
+                        em.getTransaction().commit();
                     }
                 } catch (JMSException ex) {
                 }

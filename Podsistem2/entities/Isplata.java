@@ -10,10 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,9 +39,6 @@ public class Isplata implements Serializable {
     @NotNull
     @Column(name = "IdFil")
     private int idFil;
-    @JoinColumn(name = "IdTra", referencedColumnName = "IdTra", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Transakcija transakcija;
 
     public Isplata() {
     }
@@ -73,14 +68,6 @@ public class Isplata implements Serializable {
         this.idFil = idFil;
     }
 
-    public Transakcija getTransakcija() {
-        return transakcija;
-    }
-
-    public void setTransakcija(Transakcija transakcija) {
-        this.transakcija = transakcija;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -105,6 +92,5 @@ public class Isplata implements Serializable {
     public String toString() {
         return "Isplata{" + "idTra=" + idTra + ", idFil=" + idFil + '}';
     }
-
     
 }
