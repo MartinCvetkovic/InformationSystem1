@@ -9,11 +9,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -32,13 +28,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Filijala.findAll", query = "SELECT f FROM Filijala f"),
     @NamedQuery(name = "Filijala.findByIdFil", query = "SELECT f FROM Filijala f WHERE f.idFil = :idFil"),
     @NamedQuery(name = "Filijala.findByNaziv", query = "SELECT f FROM Filijala f WHERE f.naziv = :naziv"),
-    @NamedQuery(name = "Filijala.findByAdresa", query = "SELECT f FROM Filijala f WHERE f.adresa = :adresa")})
+    @NamedQuery(name = "Filijala.findByAdresa", query = "SELECT f FROM Filijala f WHERE f.adresa = :adresa"),
+    @NamedQuery(name = "Filijala.findByIdMes", query = "SELECT f FROM Filijala f WHERE f.idMes = :idMes")})
 public class Filijala implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "IdFil")
     private Integer idFil;
     @Basic(optional = false)
@@ -51,9 +48,10 @@ public class Filijala implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "Adresa")
     private String adresa;
-    @JoinColumn(name = "IdMes", referencedColumnName = "IdMes")
-    @ManyToOne(optional = false)
-    private Mesto idMes;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IdMes")
+    private int idMes;
 
     public Filijala() {
     }
@@ -62,10 +60,11 @@ public class Filijala implements Serializable {
         this.idFil = idFil;
     }
 
-    public Filijala(Integer idFil, String naziv, String adresa) {
+    public Filijala(Integer idFil, String naziv, String adresa, int idMes) {
         this.idFil = idFil;
         this.naziv = naziv;
         this.adresa = adresa;
+        this.idMes = idMes;
     }
 
     public Integer getIdFil() {
@@ -92,11 +91,11 @@ public class Filijala implements Serializable {
         this.adresa = adresa;
     }
 
-    public Mesto getIdMes() {
+    public int getIdMes() {
         return idMes;
     }
 
-    public void setIdMes(Mesto idMes) {
+    public void setIdMes(int idMes) {
         this.idMes = idMes;
     }
 

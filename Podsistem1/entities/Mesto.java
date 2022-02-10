@@ -6,22 +6,16 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,8 +33,8 @@ public class Mesto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "IdMes")
     private Integer idMes;
     @Basic(optional = false)
@@ -53,10 +47,6 @@ public class Mesto implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "PosBroj")
     private String posBroj;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMes")
-    private List<Filijala> filijalaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMes")
-    private List<Komitent> komitentList;
 
     public Mesto() {
     }
@@ -95,24 +85,6 @@ public class Mesto implements Serializable {
         this.posBroj = posBroj;
     }
 
-    @XmlTransient
-    public List<Filijala> getFilijalaList() {
-        return filijalaList;
-    }
-
-    public void setFilijalaList(List<Filijala> filijalaList) {
-        this.filijalaList = filijalaList;
-    }
-
-    @XmlTransient
-    public List<Komitent> getKomitentList() {
-        return komitentList;
-    }
-
-    public void setKomitentList(List<Komitent> komitentList) {
-        this.komitentList = komitentList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -137,6 +109,5 @@ public class Mesto implements Serializable {
     public String toString() {
         return "Mesto{" + "idMes=" + idMes + ", naziv=" + naziv + ", posBroj=" + posBroj + '}';
     }
-
     
 }
