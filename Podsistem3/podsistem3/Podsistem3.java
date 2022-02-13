@@ -1,7 +1,9 @@
 package podsistem3;
 
 import entities.Komitent;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -10,12 +12,14 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
+import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  *
@@ -29,6 +33,13 @@ public class Podsistem3 {
     @Resource(lookup = "bankaTopic")
     private static Topic topic;
 
+    private static void sendListToServer(JMSContext context, JMSProducer producer, Query query) throws JMSException {
+        List resultList = query.getResultList();
+        ObjectMessage objMsg = context.createObjectMessage((Serializable) resultList);
+        objMsg.setStringProperty("za", "cs");
+        producer.send(topic, objMsg);
+    }
+
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("Podsistem3PU");
         EntityManager em = emf.createEntityManager();
@@ -40,12 +51,15 @@ public class Podsistem3 {
             if (message instanceof TextMessage) {
                 try {
                     TextMessage textMessage = (TextMessage) message;
-                    if (textMessage.getText().equals("ps1")) {
-                        // TODO
-                        System.out.println("Poruka primljena iz ps1 u ps3");
-                    } else if (textMessage.getText().equals("ps2")) {
-                        // TODO
-                        System.out.println("Poruka primljena iz ps2 u ps3");
+                    if (textMessage.getText().equals("cs:15")) {
+                        sendListToServer(context, producer, em.createNamedQuery("Mesto.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Filijala.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Komitent.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Racun.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Transakcija.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Uplata.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Isplata.findAll"));
+                        sendListToServer(context, producer, em.createNamedQuery("Prenos.findAll"));
                     }
                 } catch (JMSException ex) {
                 }
@@ -53,7 +67,29 @@ public class Podsistem3 {
             if (message instanceof ObjectMessage) {
                 try {
                     ObjectMessage objectMessage = (ObjectMessage) message;
-                    if (objectMessage.getStringProperty("za") == null || !objectMessage.getStringProperty("za").equals("cs")) {
+                    if (objectMessage.getStringProperty("funkcija16") != null && objectMessage.getStringProperty("funkcija16").equals("true")) {
+                        List result = (List) objectMessage.getObject();
+                        String table = objectMessage.getStringProperty("tabela");
+                        List ps3List = em.createNamedQuery(table + ".findAll").getResultList();
+                        List resList = new Vector();
+                        for (Object ent : result) {
+                            boolean contains = false;
+                            if (ps3List != null) {
+                                for (Object ps3ent : ps3List) {
+                                    if (ent.equals(ps3ent) && ent.toString().equals(ps3ent.toString())) {
+                                        contains = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (contains == false) {
+                                resList.add(ent);
+                            }
+                        }
+                        ObjectMessage returnMessage = context.createObjectMessage((Serializable) resList);
+                        returnMessage.setStringProperty("za", "cs");
+                        producer.send(topic, returnMessage);
+                    } else if (objectMessage.getStringProperty("za") == null || !objectMessage.getStringProperty("za").equals("cs")) {
                         List result = (List) objectMessage.getObject();
                         String table = objectMessage.getStringProperty("tabela");
                         List ps3List = em.createNamedQuery(table + ".findAll").getResultList();
@@ -91,7 +127,7 @@ public class Podsistem3 {
         });
         try {
             while (true) {
-                Thread.sleep(30 * 1000);
+                Thread.sleep(120 * 1000);
                 TextMessage textMessage = context.createTextMessage("ps3");
                 producer.send(topic, textMessage);
                 System.out.println("Poslata poruka iz ps3");
