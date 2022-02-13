@@ -41,6 +41,14 @@ public class Podsistem1 {
         producer.send(topic, objMsg);
     }
 
+    private static void sendListToSubsystemWithTag(JMSContext context, JMSProducer producer, Query query, String table) throws JMSException {
+        List resultList = query.getResultList();
+        ObjectMessage objMsg = context.createObjectMessage((Serializable) resultList);
+        objMsg.setStringProperty("tabela", table);
+        objMsg.setStringProperty("funkcija16", "true");
+        producer.send(topic, objMsg);
+    }
+    
     private static void sendListToServer(JMSContext context, JMSProducer producer, Query query) throws JMSException {
         List resultList = query.getResultList();
         ObjectMessage objMsg = context.createObjectMessage((Serializable) resultList);
@@ -107,6 +115,10 @@ public class Podsistem1 {
                         sendListToServer(context ,producer, em.createNamedQuery("Filijala.findAll"));
                     } else if (textMessage.getText().equals("cs:12")) {
                         sendListToServer(context ,producer, em.createNamedQuery("Komitent.findAll"));
+                    } else if (textMessage.getText().equals("cs:16")) {
+                        sendListToSubsystemWithTag(context, producer, em.createNamedQuery("Mesto.findAll"), "Mesto");
+                        sendListToSubsystemWithTag(context, producer, em.createNamedQuery("Filijala.findAll"), "Filijala");
+                        sendListToSubsystemWithTag(context, producer, em.createNamedQuery("Komitent.findAll"), "Komitent");
                     }
                 } catch (JMSException ex) {
                     if(em.getTransaction().isActive())
